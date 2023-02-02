@@ -37,16 +37,15 @@ namespace Xadrez_Cs
 
             SolidBrush brush = new SolidBrush(Color.LightGray);
             Font ft = new Font("Arial", 10);
+
             for (int i = 0; i < 8; i++)
             {
                 for (int j = 0; j < 8; j++)
                 {
-                    g.FillRectangle(brush, j * 100, i * 100, 100, 100);
+                    g.FillRectangle(brush, i * 100, j * 100, 100, 100);
                     if(game.Pos[i, j] != null)
                     {
-                        //g.DrawString(game.Pos[i, j].name, ft, Brushes.Red, j * 100, i * 100);
-                        //Image img = Image.FromFile("knight.png");
-                        g.DrawImage(game.Pos[i, j].img, j * 100+10, i * 100,90,100);
+                        g.DrawImage(game.Pos[i, j].img, i * 100+10, j * 100,90,100);
                     }
                     if (brush.Color == Color.LightGray)
                     {
@@ -104,14 +103,8 @@ namespace Xadrez_Cs
                     {
                         PosB.X = i;
                         PosB.Y = j;
-                        if(((PosB.Y != PosA.Y) || (PosB.X != PosA.X)) && (game.Pos[PosA.Y, PosA.X] != null) && game.Pos[PosA.Y, PosA.X].Move(new Point(PosB.X, PosB.Y)))
-                        {
-                            game.Pos[PosB.Y, PosB.X] = game.Pos[PosA.Y, PosA.X];
-                            game.Pos[PosA.Y, PosA.X] = null;
-                            game.Pos[PosB.Y, PosB.X].PosX = PosB.X;
-                            game.Pos[PosB.Y, PosB.X].PosY = PosB.Y;
-                        }
-                        PosB = PosA = new Point();
+                        game.Move(PosA, PosB);
+                        PosA = PosB = new Point();
                     }
                 }
             }

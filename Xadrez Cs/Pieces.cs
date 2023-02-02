@@ -12,12 +12,14 @@ namespace Xadrez_Cs
         public int PosX;
         public int PosY;
         public bool Alive = true;
+        public bool black;
         public string name;
         public Image img;
         public bool CanMove;
 
-        public Piece(int x, int y,bool black)
+        public Piece(int x, int y,bool b)
         {
+            black = b;
             PosX= x;
             PosY= y;
         }
@@ -157,10 +159,14 @@ namespace Xadrez_Cs
         public override bool Move(Point newLocation)
         {
             CanMove = false;
-            if (((newLocation.X - PosX == 1) && (newLocation.Y - PosY == 2)) ||
-                ((newLocation.X - PosX == -1) && (newLocation.Y - PosY == 2)) ||
+            if (((newLocation.X - PosX == 1) && (newLocation.Y - PosY == 2))   ||
+                ((newLocation.X - PosX == 1) && (newLocation.Y - PosY == -2))  ||
+                ((newLocation.X - PosX == -1) && (newLocation.Y - PosY == 2))  ||
                 ((newLocation.X - PosX == -1) && (newLocation.Y - PosY == -2)) ||
-                ((newLocation.X - PosX == 1) && (newLocation.Y - PosY == -2)))
+                ((newLocation.X - PosX == 2) && (newLocation.Y - PosY == 1))   ||
+                ((newLocation.X - PosX == 2) && (newLocation.Y - PosY == -1))  ||
+                ((newLocation.X - PosX == -2) && (newLocation.Y - PosY == 1))  ||
+                ((newLocation.X - PosX == -2) && (newLocation.Y - PosY == -1)))
             {
                 CanMove = true;
             }
@@ -186,9 +192,12 @@ namespace Xadrez_Cs
         public override bool Move(Point newLocation)
         {
             CanMove = false;
-            if ((newLocation.Y - PosY == -1) && (newLocation.X - PosX == 0))
+            if (newLocation.X - PosX == 0)
             {
-                CanMove = true;
+                if (((name == "WPawn") && (newLocation.Y - PosY == -1)) || ((name == "BPawn") && (newLocation.Y - PosY == 1)))
+                {
+                    CanMove = true;
+                }            
             }
             return CanMove;
         }
