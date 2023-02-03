@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Xadrez_Cs
+namespace Chess_Cs
 {
     public abstract class Piece
     {
@@ -17,11 +17,11 @@ namespace Xadrez_Cs
         public Image img;
         public bool CanMove;
 
-        public Piece(int x, int y,bool b)
+        public Piece(int x, int y, bool b)
         {
             black = b;
-            PosX= x;
-            PosY= y;
+            PosX = x;
+            PosY = y;
         }
 
         public virtual bool Move(Point location)
@@ -29,9 +29,13 @@ namespace Xadrez_Cs
             return CanMove;
         }
 
+        public virtual bool Kill(Point point)
+        {
+            return false;
+        }
     }
 
-    public class King : Piece
+        public class King : Piece
     {
         public King(int x, int y, bool black) : base(x, y, black)
         {
@@ -192,14 +196,28 @@ namespace Xadrez_Cs
         public override bool Move(Point newLocation)
         {
             CanMove = false;
-            if (newLocation.X - PosX == 0)
+            if (newLocation.X - PosX == 0) 
             {
                 if (((name == "WPawn") && (newLocation.Y - PosY == -1)) || ((name == "BPawn") && (newLocation.Y - PosY == 1)))
                 {
                     CanMove = true;
-                }            
+                }
             }
             return CanMove;
         }
+
+        public override bool Kill(Point newLocation)
+        {
+            if (Math.Abs(newLocation.X - PosX) == 1)
+            {
+                if (((name == "WPawn") && (newLocation.Y - PosY == -1)) || ((name == "BPawn") && (newLocation.Y - PosY == 1)))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
     }
 }

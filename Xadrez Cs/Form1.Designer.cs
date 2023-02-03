@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace Xadrez_Cs
+namespace Chess_Cs
 {
     partial class Form1
     {

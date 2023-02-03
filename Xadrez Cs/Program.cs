@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Xadrez_Cs
+namespace Chess_Cs
 {
     internal static class Program
     {

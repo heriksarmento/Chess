@@ -9,15 +9,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Xadrez_Cs
+namespace Chess_Cs
 {
     public partial class Form1 : Form
     {
         Game game;
-        Point PosA;
-        Point PosB;
-        int []posA = new int[2] { 50, 50 };
-        int []posB = new int[2] { 50, 50 };
+        Point PosA = new Point(50,50);
+        Point PosB = new Point(50, 50);
 
         public Form1()
         {
@@ -37,6 +35,8 @@ namespace Xadrez_Cs
 
             SolidBrush brush = new SolidBrush(Color.LightGray);
             Font ft = new Font("Arial", 10);
+           
+            
 
             for (int i = 0; i < 8; i++)
             {
@@ -67,10 +67,37 @@ namespace Xadrez_Cs
                 }
             }
 
-            if (posA != null)
+            if (PosA.X != 50)
             {
                 g.DrawRectangle(Pens.Red, PosA.X * 100, PosA.Y * 100,100,100);
                 g.DrawRectangle(Pens.Yellow, PosB.X * 100, PosB.Y * 100, 100, 100);
+            }
+
+            if (game.BlackTurn)
+            {
+                g.DrawString("Turn: Black", ft, Brushes.Red, 0, 0);
+            }
+            else
+            {
+                g.DrawString("Turn: White", ft, Brushes.Red, 0, 0);
+            }
+
+            Font gameover = new Font("Arial", 30);
+
+            if (game.gameOver)
+            {
+                StringFormat sf = new StringFormat();
+                sf.Alignment = StringAlignment.Center;
+                RectangleF r = new RectangleF(0, 0, Width, Height);
+
+                if (game.BlackTurn)
+                {
+                    g.DrawString("White Win", gameover, Brushes.White,r, sf);
+                }
+                else
+                {
+                    g.DrawString("Black Win", gameover, Brushes.White, r, sf);
+                }
             }
 
 
@@ -79,40 +106,47 @@ namespace Xadrez_Cs
 
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
-            for (int i = 0; i < 8; i++)
-            {
-                for (int j = 0; j < 8; j++)
+            if (!game.gameOver){
+                for (int i = 0; i < 8; i++)
                 {
-                    if(((e.Location.X>i*100) && (e.Location.X < (i+1) * 100)) && ((e.Location.Y > j * 100) && (e.Location.Y < (j + 1) * 100)))
+                    for (int j = 0; j < 8; j++)
                     {
-                        PosA.X = i;
-                        PosA.Y = j;
+                        if (((e.Location.X > i * 100) && (e.Location.X < (i + 1) * 100)) && ((e.Location.Y > j * 100) && (e.Location.Y < (j + 1) * 100)))
+                        {
+                            PosA.X = i;
+                            PosA.Y = j;
+                        }
                     }
                 }
-            }
-            Invalidate();
+                Invalidate();
+            }   
         }
 
         private void Form1_MouseUp(object sender, MouseEventArgs e)
-        { 
-            for (int i = 0; i < 8; i++)
+        {
+            if (!game.gameOver)
             {
-                for (int j = 0; j < 8; j++)
+                for (int i = 0; i < 8; i++)
                 {
-                    if (((e.Location.X > i * 100) && (e.Location.X < (i + 1) * 100)) && ((e.Location.Y > j * 100) && (e.Location.Y < (j + 1) * 100)))
+                    for (int j = 0; j < 8; j++)
                     {
-                        PosB.X = i;
-                        PosB.Y = j;
-                        game.Move(PosA, PosB);
-                        PosA = PosB = new Point();
+                        if (((e.Location.X > i * 100) && (e.Location.X < (i + 1) * 100)) && ((e.Location.Y > j * 100) && (e.Location.Y < (j + 1) * 100)))
+                        {
+                            PosB.X = i;
+                            PosB.Y = j;
+                            if (game.Pos[PosA.X, PosA.Y] != null)
+                            {
+                                if (((game.Pos[PosA.X, PosA.Y].black) && (game.BlackTurn)) || ((!game.Pos[PosA.X, PosA.Y].black) && (!game.BlackTurn)))
+                                {
+                                    game.Move(PosA, PosB);
+                                }
+                            }
+                        }
                     }
                 }
+                PosA = PosB = new Point(50, 50);
+                Invalidate();
             }
-            Invalidate();
         }
-
-
-
-
     }
 }

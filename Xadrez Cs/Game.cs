@@ -4,13 +4,15 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
-namespace Xadrez_Cs
+namespace Chess_Cs
 {
     internal class Game
     {
         public Piece[,] Pos = new Piece[8, 8];
         public bool BlackTurn = false;
+        public bool gameOver = false;
         public Game() {
             Pos[0, 0] = new Rook(0,0,true);
             Pos[1, 0] = new Knight(1,0, true);
@@ -40,10 +42,11 @@ namespace Xadrez_Cs
             bool CannotMove = false;
             if (Pos[a.X, a.Y] != null)
             {
-                if (((b.Y != a.Y) || (b.X != a.X)) && Pos[a.X, a.Y].Move(new Point(b.X, b.Y)))
+
+                if ((((b.Y != a.Y) || (b.X != a.X)) && Pos[a.X, a.Y].Move(new Point(b.X, b.Y))) && !((Pos[a.X, a.Y].GetType().Name == "Pawn") && (Pos[b.X, b.Y] != null)))
                 {
 
-                    if(Pos[a.X, a.Y].PosX - b.X == 0)
+                    if (Pos[a.X, a.Y].PosX - b.X == 0)
                     {
                         if(Pos[a.X, a.Y].PosY - b.Y > 0)
                         {
@@ -91,8 +94,8 @@ namespace Xadrez_Cs
                     }
                     else if(Math.Abs(Pos[a.X, a.Y].PosY - b.Y) == Math.Abs(Pos[a.X, a.Y].PosX - b.X))
                     {
-                        
-                        if((Pos[a.X, a.Y].PosY - b.Y > 0) && (Pos[a.X, a.Y].PosX - b.X > 0))
+
+                        if ((Pos[a.X, a.Y].PosY - b.Y > 0) && (Pos[a.X, a.Y].PosX - b.X > 0))
                         {
                             for (int i = 1; i < Math.Abs(Pos[a.X, a.Y].PosX - b.X); i++)
                             {
@@ -122,7 +125,7 @@ namespace Xadrez_Cs
                                 }
                             }
                         }
-                        else // < < 
+                        else  
                         {
                             for (int i = 1; i < Math.Abs(Pos[a.X, a.Y].PosX - b.X); i++)
                             {
@@ -132,17 +135,7 @@ namespace Xadrez_Cs
                                 }
                             }
                         }
-
-
-
-
                     }
-
-
-
-
-
-
                     if (!CannotMove)
                     {
                         if (Pos[b.X, b.Y] != null)
@@ -150,10 +143,13 @@ namespace Xadrez_Cs
                             if (((Pos[b.X, b.Y].black) && (Pos[a.X, a.Y].black)) || (!(Pos[b.X, b.Y].black) && !(Pos[a.X, a.Y].black))) { }
                             else
                             {
-                                Pos[b.X, b.Y] = Pos[a.X, a.Y];
-                                Pos[a.X, a.Y] = null;
-                                Pos[b.X, b.Y].PosX = b.X;
-                                Pos[b.X, b.Y].PosY = b.Y;
+
+                                    Pos[b.X, b.Y] = Pos[a.X, a.Y];
+                                    Pos[a.X, a.Y] = null;
+                                    Pos[b.X, b.Y].PosX = b.X;
+                                    Pos[b.X, b.Y].PosY = b.Y;
+                                    BlackTurn = !BlackTurn;
+                                
                             }
                         }
                         else
@@ -163,10 +159,51 @@ namespace Xadrez_Cs
                             Pos[a.X, a.Y] = null;
                             Pos[b.X, b.Y].PosX = b.X;
                             Pos[b.X, b.Y].PosY = b.Y;
+                            BlackTurn = !BlackTurn;
+                        }
+                    }
+                }else if((!Pos[a.X, a.Y].Move(new Point(b.X, b.Y))) && (Pos[b.X, b.Y]!=null)){
+                    if (Pos[a.X, a.Y].GetType().Name == "Pawn")
+                    {
+                        if (Pos[a.X, a.Y].Kill(new Point(b.X, b.Y)))
+                        {
+                            Pos[b.X, b.Y] = Pos[a.X, a.Y];
+                            Pos[a.X, a.Y] = null;
+                            Pos[b.X, b.Y].PosX = b.X;
+                            Pos[b.X, b.Y].PosY = b.Y;
+                            BlackTurn = !BlackTurn;
                         }
                     }
                 }
             }
+
+            bool WKing = false;
+            bool BKing = false;
+            foreach (Piece falseKing in Pos)
+            {
+                if (falseKing != null)
+                {
+                    if (falseKing.GetType().Name == "King")
+                    {
+                        if (falseKing.name == "WKing")
+                        {
+                            WKing = true;
+                        }
+                        else
+                        {
+                            BKing = true;
+                        }
+                    }
+                } 
+            }
+
+            if ((!WKing) || (!BKing))
+            {
+                gameOver = true;
+            }
+
+
+
         }
 
 
