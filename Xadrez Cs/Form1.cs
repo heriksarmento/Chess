@@ -92,11 +92,11 @@ namespace Chess_Cs
 
                 if (game.BlackTurn)
                 {
-                    g.DrawString("White Win", gameover, Brushes.White,r, sf);
+                    g.DrawString("White Win", gameover, Brushes.Red,r, sf);
                 }
                 else
                 {
-                    g.DrawString("Black Win", gameover, Brushes.White, r, sf);
+                    g.DrawString("Black Win", gameover, Brushes.Red, r, sf);
                 }
             }
 
